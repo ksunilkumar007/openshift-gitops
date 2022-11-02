@@ -8,7 +8,7 @@ subjects:
     namespace: cicd-pipelines
   - kind: ServiceAccount
     name: argocd-argocd-application-controller
-    namespace: openshift-gitops
+    namespace: argocd-control-plane
   - kind: ServiceAccount
     name: openshift-gitops-applicationset-controller
     namespace: openshift-gitops
