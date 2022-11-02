@@ -2,6 +2,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
   name: pipeline-trigger-template
+  namespace: cicd-pipelines
 spec:
   params:
     - name: git-url
