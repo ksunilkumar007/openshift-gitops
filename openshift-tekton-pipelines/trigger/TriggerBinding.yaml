@@ -1,0 +1,14 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: pipeline-trigger-binding
+spec:
+  params:
+    - name: git-url
+      value: $(body.repository.url)
+    - name: git-branch
+      value: 'main'
+    - name: image
+      value: $(body.head_commit.id)
+    - name: repo-name
+      value: $(body.repository.name)

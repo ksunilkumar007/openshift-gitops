@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    operator:
+      tekton:
+        dev/enable-annotation=enabled: enabled
+  name: cicd-pipelines
+spec:
+  finalizers:
+    - kubernetes

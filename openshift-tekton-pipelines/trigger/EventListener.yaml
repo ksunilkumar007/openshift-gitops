@@ -1,0 +1,16 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: pipeline-event-listener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    #    - triggerRef: pipeline-trigger
+    - name: cel-trigger-for-main
+      interceptors:
+        - cel:
+            filter: "body.ref.split('/')[2] == 'main'"
+      bindings:
+        - ref: pipeline-trigger-binding
+      template:
+        ref: pipeline-trigger-template

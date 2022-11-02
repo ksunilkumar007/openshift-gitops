@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-deployment
+spec:
+  params:
+    - name: image
+    - name: repo-name
+
+  workspaces:
+    - name: gitops-workspace
+
+  steps:
+    - name: update-yaml
+      image: alpine/git:v2.26.2
+      workingDir: "$(workspaces.gitops-workspace.path)"
+      script: |
+        #!/usr/bin/env sh
+        set -e
+        git config --global user.email "cicd-pipeline@redhat.com"
+        git config --global user.name "cicd-pipeline"
+        rm -rf project
+        git clone -b main https://github.com/ksunilkumar007/openshift-gitops.git  project
+        cd project/$(inputs.params.repo-name)
+
+        echo "Updating yaml"
+        sed -i "s#image: [a-zA-Z0-9|.\/|-]*:[0-9|.]*[a-zA-Z0-9|.\/|-]*:[a-zA-Z0-9|.]*#image: $(inputs.params.image)#" deployment.yaml
+        cat deployment.yaml
+        git add -u
+        git commit -m "[tekton] updating deployment"
+        git push
+---

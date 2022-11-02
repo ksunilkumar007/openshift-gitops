@@ -1,0 +1,60 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cicd-pipeline
+spec:
+  workspaces:
+    - name: shared-workspace
+    - name: gitops-workspace
+  params:
+    - name: git-url
+      type: string
+    - name: git-branch
+      type: string
+    - name: image
+      type: string
+    - name: repo-name
+      type: string
+
+  tasks:
+    - name: git-clone
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-branch)
+
+    - name: s2i-java
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: ClusterTask
+        name: s2i-java
+      params:
+        - name: VERSION
+          value: openjdk-11-ubi8
+        - name: IMAGE
+          value: image-registry.openshift-image-registry.svc:5000/$(params.repo-name)/$(params.repo-name):$(params.image)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: update-deployment
+      runAfter:
+        - s2i-java
+      taskRef:
+        name: update-deployment
+      params:
+        - name: image
+          value: image-registry.openshift-image-registry.svc:5000/$(params.repo-name)/$(params.repo-name):$(params.image)
+        - name: repo-name
+          value: $(params.repo-name)
+      workspaces:
+        - name: gitops-workspace
+          workspace: gitops-workspace

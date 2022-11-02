@@ -1,0 +1,40 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: pipeline-trigger-template
+spec:
+  params:
+    - name: git-url
+      description: The git repository url
+    - name: git-branch
+      description: The git branch name
+    - name: image
+      description: commit id as a image tag
+    - name: repo-name
+      description: repository name
+
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: build-$(tt.params.repo-name)-
+      spec:
+        serviceAccountName: pipeline
+        pipelineRef:
+          name: cicd-pipeline
+        params:
+          - name: git-url
+            value: $(tt.params.git-url)
+          - name: git-branch
+            value: $(tt.params.git-branch)
+          - name: image
+            value: $(tt.params.image)
+          - name: repo-name
+            value: $(tt.params.repo-name)
+        workspaces:
+          - name: shared-workspace
+            persistentVolumeClaim:
+              claimName: shared-workspace
+          - name: gitops-workspace
+            persistentVolumeClaim:
+              claimName: gitops-workspace
