@@ -10,7 +10,7 @@ spec:
   source:
     directory:
       recurse: true
-    path: openshift-tekton-pipelines
+    path: clusterlogging
     repoURL: https://github.com/ksunilkumar007/openshift-gitops.git
     targetRevision: HEAD
   syncPolicy:
