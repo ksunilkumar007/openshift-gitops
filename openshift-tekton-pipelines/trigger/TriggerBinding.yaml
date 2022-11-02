@@ -2,6 +2,7 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
   name: pipeline-trigger-binding
+  namespace: cicd-pipelines
 spec:
   params:
     - name: git-url
