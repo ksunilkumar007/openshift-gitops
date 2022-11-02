@@ -2,7 +2,6 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: gitops-workspace
-  namespace: cicd-pipelines
 spec:
   accessModes:
     - ReadWriteOnce
