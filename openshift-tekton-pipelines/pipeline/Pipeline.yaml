@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: tekton-cicd-pipeline
+  namespace: cicd-pipelines
 spec:
   workspaces:
     - name: shared-workspace
